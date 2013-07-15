@@ -35,3 +35,5 @@ Ok, enough with this.
 If a CUDA compiler is found, this example compiles a squaring kernel `gpuSquareDemo`. It squares the from 0 to 9 and prints out the results (both via `printf` on the device and a `cout` on the host afterwards).
 
 If no CUDA compiler is found, a program named `noCUDA` is built with a sad message.
+
+**Hint**: Compile into a `build` directory, so you can get rid of the messy auto generated objects after testing.
