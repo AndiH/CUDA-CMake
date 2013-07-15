@@ -1,0 +1,1 @@
+ADD_EXECUTABLE(noCUDA main.cpp)
