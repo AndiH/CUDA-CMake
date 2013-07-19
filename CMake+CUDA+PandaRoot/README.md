@@ -42,13 +42,13 @@ So far the C++ side. The CMake side is analog to it:
 Let's go through some aspects of the example and explain the files provided in this repo (marked bold in this description).
 
 #### C++
-**`example/cudaExample.cu`** provides two exemplary functions: `DeviceInfo()` prints out some info about the used graphics card (and is shamelessly *borrowed* from the [here](https://subversion.gsi.de/trac/fairroot/browser/fairbase/release/cuda/cuda_imp/test_lib.cu)), `someOperation()` implements a square operation on the device. It's more or less the `squareOnDevice()` function from the `externalClass.cuh` file of the [CMake+CUDA example of this repository](https://github.com/AndiH/CMake/tree/master/CMake%2BCUDA). `someOperation()` prepares the data and calls the `square_array` kernel. Note the keywords in front of `DeviceInfo()` and `someOperation()`:
+**example/cudaExample.cu** provides two exemplary functions: `DeviceInfo()` prints out some info about the used graphics card (and is shamelessly *borrowed* from the [here](https://subversion.gsi.de/trac/fairroot/browser/fairbase/release/cuda/cuda_imp/test_lib.cu)), `someOperation()` implements a square operation on the device. It's more or less the `squareOnDevice()` function from the `externalClass.cuh` file of the [CMake+CUDA example of this repository](https://github.com/AndiH/CMake/tree/master/CMake%2BCUDA). `someOperation()` prepares the data and calls the `square_array` kernel. Note the keywords in front of `DeviceInfo()` and `someOperation()`:
 
 ```C++
 extern "C" void someOperation() {}
 ```
 
-**`PndCudaExampleTask.h/cxx`** is the aforementioned task and wrapper class. It provides two methods which are called when `Exec()` is invoked:
+**PndCudaExampleTask.h/cxx** is the aforementioned task and wrapper class. It provides two methods which are called when `Exec()` is invoked:
 
  * `void callGpuStuff()` just calls `someOperation()` from `example/cudaExample.cu`
  * `void DeviceInfo_()` does the same for the device info function.
@@ -62,10 +62,10 @@ extern "C" void DeviceInfo();
 extern "C" void someOperation();
 ```
 
-**`PndCudaLinkDef.h`** provides info for ROOT's CINT compiler, ignore it just like **`run_cudaExampleTask.C`** which is a steering macro in the usual PandaRoot macro chain.
+**PndCudaLinkDef.h** provides info for ROOT's CINT compiler, ignore it just like **run_cudaExampleTask.C** which is a steering macro in the usual PandaRoot macro chain.
 
 #### CMake
-**`example/CMakeLists.txt`** is the file which compiles the CUDA stuff. It's quite extensively commented, but for the sake of it, let's go through some highlights.
+**example/CMakeLists.txt** is the file which compiles the CUDA stuff. It's quite extensively commented, but for the sake of it, let's go through some highlights.
 
  * `find_package(CUDA)` makes sure there's the needed CMake plugin for CUDA
  * `list(APPEND CUDA_NVCC_FLAGS --gpu-architecture sm_20)` changes the NVCC compiler flag to use computing capability 2.0 (this is important since our kernel useses `printf`s)
@@ -73,7 +73,7 @@ extern "C" void someOperation();
 
 To keep as much automated as possible I introduced a new variable into the CMake file: `PNDCUDAEXAMPLESONAME`. This is the name of our shared object file. It is set to *PndCudaExample* once, then set to the same value in the parent CMakeLists.txt scope again. Per default it's only available in the current scope. `CUDA_ADD_LIBRARY()` uses this variable to create the .so file, but we need it for a few things more… (just a second)
 
-**`CMakeLists.txt`** is full of ROOT overhead of our big PandaRoot project. Important are:
+**CMakeLists.txt** is full of ROOT overhead of our big PandaRoot project. Important are:
 
  * `add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/example)` to add the `example/CMakeLists.txt` to the project
  * `add_dependencies(PndCuda ${PNDCUDAEXAMPLESONAME})` to prevent the current C++ CMake project from compiling before the CUDA CMake project is done – because then the .so file to link against wouldn't yet be created. Here you see why it's convenient to introduce a variable for the .so filename.
