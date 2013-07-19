@@ -83,3 +83,13 @@ To keep as much automated as possible I introduced a new variable into the CMake
 That's it.
 
 Now you can use external CUDA functions from big C++ projects using CMake.
+
+### Final Remarks
+
+Don't forget to add
+
+```C++
+if(isLibrary("libPndCuda"))gSystem->Load("libPndCuda");
+```
+
+to your `rootlogon.C` loading macro in order to load the newly generated library into ROOT.
